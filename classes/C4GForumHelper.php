@@ -1875,7 +1875,7 @@ class C4GForumHelper extends \System
 		$set['pid'] = $threadId;
 		$set['author'] = $userId;
 		$set['creation'] = time();
-		$set['text'] = nl2br(C4GUtils::secure_ugc($post));
+		$set['text'] = C4GUtils::secure_ugc($post);
 		$set['subject'] = C4GUtils::secure_ugc($subject);
 		$set['forum_id'] = $forumId;
 		$set['post_number'] = $post_number;
@@ -1953,8 +1953,8 @@ class C4GForumHelper extends \System
 	public function updatePostDB($post, $userId, $subject,$tags,$rating = 0, $postText, $linkname, $linkurl, $loc_geox, $loc_geoy, $locstyle, $loc_label, $loc_tooltip, $loc_data_content, $loc_osm_id)
 	{
 		$set = array();
-		$set['text'] = nl2br(C4GUtils::secure_ugc($postText));
-		$set['subject'] = nl2br(C4GUtils::secure_ugc($subject));
+		$set['text'] = C4GUtils::secure_ugc($postText);
+		$set['subject'] = C4GUtils::secure_ugc($subject);
 		$set['edit_count'] = $post['edit_count'] + 1;
 		$set['edit_last_author'] = $userId;
 		$set['edit_last_time'] = time();
@@ -2034,7 +2034,7 @@ class C4GForumHelper extends \System
 	{
 		$set = array();
 		$set['name'] = nl2br(C4GUtils::secure_ugc($name));
-		$set['threaddesc'] = nl2br(C4GUtils::secure_ugc($threaddesc));
+		$set['threaddesc'] = C4GUtils::secure_ugc($threaddesc);
 		$set['edit_count'] = $thread['edit_count'] + 1;
 		$set['edit_last_author'] = $userId;
 		$set['edit_last_time'] = time();
@@ -2252,7 +2252,7 @@ class C4GForumHelper extends \System
 			$set['creation'] = time();
 			$set['sort'] = $sort;
 			$set['name'] = C4GUtils::secure_ugc($threadname);
-		    $set['threaddesc'] = nl2br(C4GUtils::secure_ugc($threaddesc));
+			$set['threaddesc'] = C4GUtils::secure_ugc($threaddesc);
             if(!empty($tags)) {
                 $set['tags'] = implode(", ",$tags);
             }

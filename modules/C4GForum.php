@@ -1244,14 +1244,9 @@ namespace c4g\Forum;
             }
 
             $text = $post['text'];
-            // Handle BBCodes, if activated
-            if ($this->c4g_forum_bbcodes) {
-                $textClass .= ' BBCode-Area';
-                //$text = preg_replace('#<br? ?/>#', '', $text);
-                //$text = $bbcode->Parse($text);
-            }else{
-                $text = html_entity_decode($text);
-            }
+
+            // removed bbcode handling
+            $text = html_entity_decode($text);
 
             // search in the forum text for lib and replace by assets/vendor (file download compatibility)
             $text = str_replace('/lib', '/assets/vendor', $text);
@@ -2133,8 +2128,9 @@ JSPAGINATE;
             $post             = array();
             $post['username'] = $this->User->username;
             $post['creation'] = time();
-            $post['subject']  = nl2br(C4GUtils::secure_ugc($this->putVars['subject']));
-            $post['text']     = nl2br(C4GUtils::secure_ugc($this->putVars['post']));
+            $post['subject']  = C4GUtils::secure_ugc($this->putVars['subject']);
+            $post['text']     = C4GUtils::secure_ugc($this->putVars['post']);
+
             $post['linkname'] = C4GUtils::secure_ugc($this->putVars['linkname']);
             $post['linkurl']  = C4GUtils::secure_ugc($this->putVars['linkurl']);
             $data             = $this->generatePostAsHtml($post, false, true);
@@ -2367,9 +2363,10 @@ JSPAGINATE;
             $post             = array();
             $post['username'] = $this->User->username;
             $post['creation'] = time();
-            $post['subject']  = nl2br(C4GUtils::secure_ugc($threadname));
-            $post['tags']     = nl2br(C4GUtils::secure_ugc($this->putVars['tags']));
-            $post['text']     = nl2br(C4GUtils::secure_ugc($this->putVars['post']));
+            $post['subject']  = C4GUtils::secure_ugc($threadname);
+            $post['tags']     = C4GUtils::secure_ugc($this->putVars['tags']);
+            $post['text']     = C4GUtils::secure_ugc($this->putVars['post']);
+
             $post['linkname'] = C4GUtils::secure_ugc($this->putVars['linkname']);
             $post['linkurl']  = C4GUtils::secure_ugc($this->putVars['linkurl']);
             $data .= $this->generatePostAsHtml($post, false, true);
