@@ -2034,7 +2034,7 @@ class C4GForumHelper extends \System
 	{
 		$set = array();
 		$set['name'] = nl2br(C4GUtils::secure_ugc($name));
-		$set['threaddesc'] = C4GUtils::secure_ugc($threaddesc);
+		$set['threaddesc'] = nl2br(C4GUtils::secure_ugc($threaddesc));
 		$set['edit_count'] = $thread['edit_count'] + 1;
 		$set['edit_last_author'] = $userId;
 		$set['edit_last_time'] = time();

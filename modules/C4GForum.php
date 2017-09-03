@@ -1246,7 +1246,8 @@ namespace c4g\Forum;
             $text = $post['text'];
 
             // removed bbcode handling
-            $text = html_entity_decode($text);
+            // and remove ANY html decoding...
+//            $text = html_entity_decode($text);
 
             // search in the forum text for lib and replace by assets/vendor (file download compatibility)
             $text = str_replace('/lib', '/assets/vendor', $text);
@@ -3857,6 +3858,7 @@ JSPAGINATE;
                     $GLOBALS['TL_LANG']['C4G_FORUM']['THREADDESC'] . ':<br/>' .
                     '<input type="hidden" name="site" class="formdata" value="' . $sCurrentSite . '">' .
                     '<input type="hidden" name="hsite" class="formdata" value="' . $sCurrentSiteHashed . '">' .
+                    // we leave threads descriptions as pure text, so we DO strip tags here
                     '<textarea name="threaddesc" id="' . $dialogId . '_threaddesc" class="formdata ui-corner-all" cols="80" rows="3">' . strip_tags($desc) . '</textarea><br />' .
                     '</div>';
             } else {
@@ -3954,7 +3956,9 @@ JSPAGINATE;
                      '<input type="hidden" name="uploadPath" value="' . $imageUploadPath->path . '">' .
                      '<input type="hidden" name="site" class="formdata" value="' . $sCurrentSite . '">' .
                      '<input type="hidden" name="hsite" class="formdata" value="' . $sCurrentSiteHashed . '">' .
-                     '<textarea' . $editorId . ' name="post" cols="80" rows="15" class="formdata ui-corner-all">' . strip_tags($post['text']) . '</textarea>' .
+                     // we DON'T want to strip html tags here, as we store in html into database
+                     // BUT we must encode entities because editor expects pure text... 
+                     '<textarea' . $editorId . ' name="post" cols="80" rows="15" class="formdata ui-corner-all">' . htmlentities($post['text']) . '</textarea>' .
                      '</div>';
 
             $data .= $this->getPostlinkForForm('c4gForumEditPostLink', $post['forumid'], $dialogId, $post['linkname'], $post['linkurl']);

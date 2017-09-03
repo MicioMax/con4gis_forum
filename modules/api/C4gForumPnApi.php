@@ -134,7 +134,8 @@
 
                     $aData = array(
                         "subject"      => \Input::post('subject'),
-                        "message"      => htmlentities($_POST['message']),
+                        // no html conversion here
+                        "message"      => $_POST['message'],
                         "sender_id"    => $this->User->id,
                         "recipient_id" => $iRecipientId,
                         "dt_created"   => time(),
@@ -253,7 +254,10 @@
 
                     $aData = array(
                         "subject"      => \Input::post('subject'),
-                        "message"      => htmlentities($_POST['message']),
+//                      no html conversion here
+//@@                        "message"      => htmlentities($_POST['message']),
+                        "message"      => $_POST['message'],
+
                         "sender_id"    => $this->User->id,
                         "recipient_id" => $iRecipientId,
                         "dt_created"   => time(),

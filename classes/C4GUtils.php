@@ -35,7 +35,9 @@ class C4GUtils {
 		$result = urldecode(preg_replace($regex,' ',urlencode($result)));
 
 		// Eingangs-Html formatieren und überflüssige Leerzeichen entfernen
-		return trim(htmlspecialchars($result));
+                // no html conversion here
+//@@		return trim(htmlspecialchars($result));
+                return trim($result);
 
 	}
 
