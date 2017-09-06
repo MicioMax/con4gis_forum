@@ -284,7 +284,8 @@ namespace c4g\Forum;
             $cron      = array();
             $addresses = array();
             foreach ($subscribers as $subscriber) {
-                if ((!$addresses[$subscriber ['email']]) && ($subscriber['memberId'] != $this->User->id)) {
+//                if ((!$addresses[$subscriber ['email']]) && ($subscriber['memberId'] != $this->User->id)) {
+if(true) {
                     if ($subscriber['type'] == 1) {
                         $sType = 'SUBFORUM';
                         $sPerm = 'subscribeforum';
@@ -374,6 +375,7 @@ namespace c4g\Forum;
                         $aMailData['THREADNAME']           = $thread['threadname'];
 
 
+/*
                         // umformatierung BBC-Quotes
                         $this->MailCache ['post'] = preg_replace('/\[quote=([^\]]+)\]([\s\S]*?)\[\/quote\]/i', '"$2" (Zitat von $1)', $this->MailCache ['post']);
                         $this->MailCache ['post'] = preg_replace('/\[quote\]([\s\S]*?)\[\/quote\]/i', '"$1" (Zitat)', $this->MailCache ['post']);
@@ -385,6 +387,7 @@ namespace c4g\Forum;
 
                         // entferne BBCodes
                         $this->MailCache ['post'] = preg_replace('/\[[^\[\]]*\]/i', '', $this->MailCache ['post']);
+*/
 
                         // set post subject and content
                         $aMailData['POST_SUBJECT'] = $this->MailCache ['subject'];
@@ -393,7 +396,7 @@ namespace c4g\Forum;
                         // building links
                         if ($sType == "SUBFORUM") {
 
-                            $aMailData['DETAILS_LINK']         = $this->helper->getUrlForForum($thread['forumid'], $sUrl);
+                            $aMailData['DETAILS_LINK']         = $this->helper->getUrlForThread($threadId, $thread['forumid'], $sUrl);
                             $aMailData['UNSUBSCRIBE_LINK']     = $this->generateUnsubscribeLinkSubforum($thread['forumid'], $subscriber['email'], $sUrl);
                             $aMailData['UNSUBSCRIBE_ALL_LINK'] = $this->generateUnsubscribeLinkAll($subscriber['email'], $sUrl);
 

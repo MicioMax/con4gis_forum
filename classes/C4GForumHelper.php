@@ -3045,7 +3045,7 @@ class C4GForumHelper extends \System
 			$eMail->charset = $data['charset'];
 			$eMail->from = $data['from'];
 			$eMail->subject = $data['subject'];
-			$eMail->text = $data['text'];
+			$eMail->html = $data['text'];
 			$eMail->sendTo($data['to']);
 
 			unset($eMail);
