@@ -115,9 +115,9 @@ namespace c4g\Forum;
         {
 
             if ($all) {
-                $aReturn = $this->Database->prepare("SELECT a.member AS memberId, b.email AS email, b.username as username, 1 AS type " . "FROM tl_c4g_forum_subforum_subscription a " . "LEFT JOIN tl_member b ON b.id = a.member " . "WHERE a.pid = ?")->execute($forumId)->fetchAllAssoc();
+                $aReturn = $this->Database->prepare("SELECT a.member AS memberId, b.email AS email, b.username as username, b.language AS language, 1 AS type " . "FROM tl_c4g_forum_subforum_subscription a " . "LEFT JOIN tl_member b ON b.id = a.member " . "WHERE a.pid = ?")->execute($forumId)->fetchAllAssoc();
             } else {
-                $aReturn = $this->Database->prepare("SELECT a.member AS memberId, b.email AS email, b.username as username, 1 as type " . "FROM tl_c4g_forum_subforum_subscription a " . "LEFT JOIN tl_member b ON b.id = a.member " . "WHERE a.pid = ? AND a.thread_only = 0")->execute($forumId)->fetchAllAssoc();
+                $aReturn = $this->Database->prepare("SELECT a.member AS memberId, b.email AS email, b.username as username, b.language AS language, 1 as type " . "FROM tl_c4g_forum_subforum_subscription a " . "LEFT JOIN tl_member b ON b.id = a.member " . "WHERE a.pid = ? AND a.thread_only = 0")->execute($forumId)->fetchAllAssoc();
             }
 
 
@@ -140,7 +140,7 @@ namespace c4g\Forum;
         public function getThreadSubscribersFromDB($threadId)
         {
 
-            $aReturn = $this->Database->prepare("SELECT a.member AS memberId, b.email AS email, b.username as username, 0 as type " . "FROM tl_c4g_forum_thread_subscription a " . "LEFT JOIN tl_member b ON b.id = a.member " . "WHERE a.pid = ?")->execute($threadId)->fetchAllAssoc();
+            $aReturn = $this->Database->prepare("SELECT a.member AS memberId, b.email AS email, b.username as username, b.language AS language, 0 as type " . "FROM tl_c4g_forum_thread_subscription a " . "LEFT JOIN tl_member b ON b.id = a.member " . "WHERE a.pid = ?")->execute($threadId)->fetchAllAssoc();
 
             foreach ($aReturn as $key => $aItem) {
                 if (empty($aReturn[$key]['username'])) {
@@ -285,7 +285,6 @@ namespace c4g\Forum;
             $addresses = array();
             foreach ($subscribers as $subscriber) {
                 if ((!$addresses[$subscriber ['email']]) && ($subscriber['memberId'] != $this->User->id)) {
-//if(true) {
                     if ($subscriber['type'] == 1) {
                         $sType = 'SUBFORUM';
                         $sPerm = 'subscribeforum';
@@ -310,6 +309,7 @@ namespace c4g\Forum;
                         "DETAILS_LINK"             => "",
                         "UNSUBSCRIBE_LINK"         => "",
                         "UNSUBSCRIBE_ALL_LINK"     => "",
+                        "LANGUAGE"                 => $subscriber['language'],
                     );
 
                     // check if subscriber still has permission to get subscription mails
@@ -442,6 +442,29 @@ namespace c4g\Forum;
         {
 
             $sText = html_entity_decode($sText);
+            
+            // first, check if we've got a language part corresponding
+            // to subscriber's language
+            $lang = substr(strtoupper($aData['LANGUAGE']), 0, 2);
+            $langPos = strpos($sText, "##LANGUAGE_START:" . $lang . "##");
+            $langFound = false;
+           if($langPos !== false) {
+
+				// language for subscriber found, get its part
+				// there should be a ##LANGUAGE_END## marker
+				$langPos += 21;
+				$langEnd = strpos($sText, "##LANGUAGE_END##", $langPos);
+				if($langEnd !== false) {
+					$sText = substr($sText, $langPos, $langEnd - $langPos);
+					$langFound = true;
+				}
+			}
+			
+			if(!$langFound) {
+				// language for subscriber not found, just strip ALL
+				// localizations from data
+				$sText = preg_replace('/(##LANGUAGE_START:)(\\s|\\S)*(##LANGUAGE_END##)/', '', $sText);
+			}
 
             foreach ($aData as $key => $value) {
                 $sText = str_replace('##' . $key . '##', $value, $sText);
@@ -472,6 +495,10 @@ namespace c4g\Forum;
             //        UNSUBSCRIBE_LINK: ##UNSUBSCRIBE_LINK##
             //
             //        UNSUBSCRIBE_ALL_LINK: ##UNSUBSCRIBE_ALL_LINK##
+            //
+            //        ##LANGUAGE_START:xx##
+            //        ##LANGUAGE_END##
+            //
         }
 
         /**
