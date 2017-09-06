@@ -284,8 +284,8 @@ namespace c4g\Forum;
             $cron      = array();
             $addresses = array();
             foreach ($subscribers as $subscriber) {
-//                if ((!$addresses[$subscriber ['email']]) && ($subscriber['memberId'] != $this->User->id)) {
-if(true) {
+                if ((!$addresses[$subscriber ['email']]) && ($subscriber['memberId'] != $this->User->id)) {
+//if(true) {
                     if ($subscriber['type'] == 1) {
                         $sType = 'SUBFORUM';
                         $sPerm = 'subscribeforum';
