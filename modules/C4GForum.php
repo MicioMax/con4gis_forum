@@ -209,6 +209,7 @@ namespace c4g\Forum;
             }
             $data['initData'] = $this->generateAjax($request);
 
+/*
             // save forum url for linkbuilding in ajaxrequests
             $aTmpData = $this->Session->getData();
             if (stristr($aTmpData['referer']['current'], "/con4gis_core/api/") === false) {
@@ -219,7 +220,18 @@ namespace c4g\Forum;
                 $aTmpData['referer']['current'] = $aTmpData['current_forum_url'];
                 $this->Session->setData($aTmpData);
             }
-
+*/
+			// this one should fix occasional mail links problems
+			$curPath = \System::getContainer()->get('request_stack')->getCurrentRequest()->getPathInfo();
+			// strip the leading / if any... later code is dumb enough
+			$curPath = preg_replace('/^\//', '', $curPath);
+			if(curPath && stristr($curPath, "/con4gis_core/api/") === false) {
+				$aTmpData = $this->Session->getData();
+				$aTmpData['current_forum_url']  = $curPath;
+				$aTmpData['referer']['last']    = $curPath;
+				$aTmpData['referer']['current'] = $curPath;
+				$this->Session->setData($aTmpData);
+			}
 
             $data['div'] = 'c4g_forum';
             switch ($this->c4g_forum_navigation) {
